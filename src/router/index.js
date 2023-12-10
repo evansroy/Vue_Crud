@@ -23,6 +23,11 @@ const router = createRouter({
       name: 'students',
       component: StudentView
     },
+    {
+      path: '/students/create',
+      name: 'students',
+      component: StudentCreate
+    },
   ]
 })
 
