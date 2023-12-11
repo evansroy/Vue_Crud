@@ -2,7 +2,8 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h4>Student <RouterLink to="/students/create" class="btn btn-primary float-end">Add Student</RouterLink> </h4>
+                <h4>Student <RouterLink to="/students/create" class="btn btn-primary float-end">Add Student</RouterLink>
+                </h4>
             </div>
             <div class="card-body">
                 <table class="table table-bordered">
@@ -26,8 +27,10 @@
                             <td>{{ student.phone }}</td>
                             <td>{{ student.created_at }}</td>
                             <td>
-                                <RouterLink :to="{path: '/students/' + student.id+'/edit'}" class="btn btn-success">Edit</RouterLink>
-                                <button type="button" class="btn btn-danger">Delete</button>
+                                <RouterLink :to="{ path: '/students/' + student.id + '/edit' }" class="btn btn-success">Edit
+                                </RouterLink>
+                                <button type="button" class="btn btn-danger m-2"
+                                    @click="deleteStudent(student.id)">Delete</button>
                             </td>
                         </tr>
                     </tbody>
@@ -45,7 +48,7 @@
 import axios from 'axios'
 export default {
     name: 'students',
-    data(){
+    data() {
         return {
             students: []
         }
@@ -55,11 +58,32 @@ export default {
         this.getStudents();
     },
     methods: {
-        getStudents(){
+        getStudents() {
             axios.get('http://127.0.0.1:8000/api/students').then(res => {
                 this.students = res.data.students
                 console.log(this.students);
             });
+        },
+        deleteStudent(studentId) {
+
+
+            if (confirm('Are you sure, you want to delete this data ?')) {
+                // console.log(studentId);
+                axios.delete(`http://127.0.0.1:8000/api/students/${studentId}/delete`)
+                    .then(res => {
+                        alert(res.data.message);
+                        this.getStudents();
+                    })
+                    .catch(function (error) {
+                        if (error.response) {
+
+                            if (error.response.status == 404) {
+                                alert(error.response.data.message);
+                            }
+
+                        }
+                    });
+            }
         }
     }
 }
